@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+         body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    margin-top: 20px;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    cursor: pointer;
+    background-color: aqua;
+    border-radius: 10px;
+    box-shadow: 2px 2px 3px gray;
+}
+
+#message, #restart {
+    margin-top: 10px;
+}
+
+#restart {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: bisque;
+    font-size: 20px;
+    border: 3px solid;
+}
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <div id="board">
+        <div class="cell" data-cell-index="0"></div>
+        <div class="cell" data-cell-index="1"></div>
+        <div class="cell" data-cell-index="2"></div>
+        <div class="cell" data-cell-index="3"></div>
+        <div class="cell" data-cell-index="4"></div>
+        <div class="cell" data-cell-index="5"></div>
+        <div class="cell" data-cell-index="6"></div>
+        <div class="cell" data-cell-index="7"></div>
+        <div class="cell" data-cell-index="8"></div>
+    </div>
+    <p id="message"></p>
+    <button id="restart">Restart Game</button>
+    <script >
+       const cells = document.querySelectorAll('.cell');
+const message = document.getElementById('message');
+const restartButton = document.getElementById('restart');
+
+const gameBoard = Array(9).fill('');
+let currentPlayer = 'X';
+let gameOver = false;
+
+// Function to check for a win
+function checkForWin() {
+  const winningConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  for (let i = 0; i < winningConditions.length; i++) {
+    const condition = winningConditions[i];
+    const a = gameBoard[condition[0]];
+    const b = gameBoard[condition[1]];
+    const c = gameBoard[condition[2]];
+
+    if (a === '' || b === '' || c === '') {
+      continue;
+    }
+    if (a === b && b === c) {
+      gameOver = true;
+      message.innerText = `Player ${a} Wins!`;
+      return;
+    }
+  }
+
+  // Check for a draw
+  let draw = true;
+  for (let i = 0; i < gameBoard.length; i++) {
+    if (gameBoard[i] === '') {
+      draw = false;
+      break;
+    }
+  }
+
+  if (draw) {
+    gameOver = true;
+    message.innerText = 'It\'s a Draw!';
+  }
+}
+
+// Function to handle cell click
+function handleCellClick(cell, cellIndex) {
+  if (gameOver || gameBoard[cellIndex] !== '') {
+    return;
+  }
+
+  gameBoard[cellIndex] = currentPlayer;
+  cell.textContent = currentPlayer;
+
+  checkForWin();
+
+  if (gameOver) {
+    return;
+  }
+
+  // Switch player
+  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+  message.innerText = `Player ${currentPlayer}'s Turn`;
+}
+
+// Add event listeners to each cell
+cells.forEach((cell, index) => {
+  cell.addEventListener('click', () => handleCellClick(cell, index));
+});
+
+// Restart button functionality
+restartButton.addEventListener('click', () => {
+  gameBoard.fill('');
+  currentPlayer = 'X';
+  gameOver = false;
+  cells.forEach(cell => cell.textContent = '');
+  message.innerText = `Player ${currentPlayer}'s Turn`;
+});
+
+    </script>
+</body>
+</html>
